@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
         <h1 className="text-2xl font-semibold mb-6">Privacy Policy</h1>
 
         <p className="mb-4 text-gray-700">
-          At CompileTab, we are committed to protecting your personal
+          At Akshay_Ram_Chavan, we are committed to protecting your personal
           information and your right to privacy. This Privacy Policy explains
           how we collect, use, disclose, and safeguard your information when you
           visit our website or make a purchase.
@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
 
         <p className="mt-8 text-gray-700">
           If you have any questions about this Privacy Policy, please contact us
-          at support@compiletab.com.
+          at support@akshayramchavan.com.
         </p>
       </div>
       <Footer/>

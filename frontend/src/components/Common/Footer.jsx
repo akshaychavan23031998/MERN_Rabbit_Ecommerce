@@ -132,20 +132,30 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="container mx-auto mt-12 px-4 lg:px-0 border-t border-gray-200 pt-6">
-      <p className="text-gray-500 text-xs md:text-sm tracking-tighter text-center">
-        © {year} CompileTab Pvt Ltd. All rights reserved.
-      </p>
-      <div className="flex justify-center mt-2 space-x-4 text-xs md:text-sm">
-        <Link to="/privacy-policy" rel="noopener noreferrer" target="_blank" className="text-gray-500 hover:text-gray-700 transition-colors">
-          Privacy Policy
-        </Link>
-        <span className="text-gray-400">|</span>
-        <Link to="/terms" rel="noopener noreferrer" target="_blank" className="text-gray-500 hover:text-gray-700 transition-colors">
-          Terms of Service
-        </Link>
+      <div className="max-w-xl mx-auto mt-12 px-4 border-t border-gray-200 pt-6 text-center">
+        <p className="text-gray-500 text-xs md:text-sm tracking-tighter">
+          © {year} Akshay_Ram_Chavan Pvt Ltd. All rights reserved.
+        </p>
+        <div className="flex justify-center mt-2 space-x-4 text-xs md:text-sm">
+          <Link
+            to="/privacy-policy"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          <span className="text-gray-400">|</span>
+          <Link
+            to="/terms"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            Terms of Service
+          </Link>
+        </div>
       </div>
-    </div>
     </footer>
   );
 };

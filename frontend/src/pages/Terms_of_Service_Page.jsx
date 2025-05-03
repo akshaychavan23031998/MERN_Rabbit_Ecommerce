@@ -10,7 +10,7 @@ const TermsOfService = () => {
         <h1 className="text-2xl font-semibold mb-6">Terms of Service</h1>
 
         <p className="mb-4 text-gray-700">
-          Welcome to CompileTab. By accessing or using our website, you agree to
+          Welcome to Akshay_Ram_Chavan. By accessing or using our website, you agree to
           be bound by these Terms of Service. Please read them carefully.
         </p>
 
@@ -54,7 +54,7 @@ const TermsOfService = () => {
         </h2>
         <p className="mb-4 text-gray-700">
           All content on this website, including text, graphics, logos, and
-          images, is the property of CompileTab and is protected by copyright
+          images, is the property of Akshay_Ram_Chavan and is protected by copyright
           laws. You may not use our content without our written permission.
         </p>
 
@@ -77,7 +77,7 @@ const TermsOfService = () => {
 
         <p className="mt-8 text-gray-700">
           If you have any questions about these Terms of Service, please contact
-          us at support@compiletab.com.
+          us at support@akshayramchavan.com.
         </p>
       </div>
       <Footer/>
