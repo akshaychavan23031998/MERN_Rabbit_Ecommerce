@@ -162,7 +162,7 @@ const ProductDetails = () => {
                 >
                   -
                 </button>
-                <span className="text-lg">{quantity}</span>
+                <span className="text-lg min-w-[32px] text-center">{quantity}</span>
                 <button
                   onClick={() => handleQuantityChange("plus")}
                   className="px-2 py-2 bg-gray-200 text-lg rounded cursor-pointer"
