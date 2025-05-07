@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import ProductGrid from "./ProductGrid";
 
 const selectedProduct = {
   name: "Stylish Jacket",
@@ -21,6 +22,33 @@ const selectedProduct = {
     },
   ],
 };
+
+const similarProducts = [
+  {
+    _id: 1,
+    name: "Product 1",
+    price: 1200,
+    images: [{url: "https://picsum.photos/500/500?random=6"}]
+  },
+  {
+    _id: 2,
+    name: "Product 2",
+    price: 1200,
+    images: [{url: "https://picsum.photos/500/500?random=7"}]
+  },
+  {
+    _id: 3,
+    name: "Product 3",
+    price: 1200,
+    images: [{url: "https://picsum.photos/500/500?random=8"}]
+  },
+  {
+    _id: 4,
+    name: "Product 4",
+    price: 1200,
+    images: [{url: "https://picsum.photos/500/500?random=9"}]
+  }
+]
 
 const ProductDetails = () => {
   const [mainImage, setMainImage] = useState("");
@@ -106,11 +134,13 @@ const ProductDetails = () => {
             </h1>
 
             <p className="text-lg text-gray-600 mb-1 line-through">
-              {selectedProduct.originalPrice}
+              {/*selectedProduct.originalPrice*/}
+              ₹ {Number(selectedProduct.originalPrice).toLocaleString("en-IN")}
             </p>
 
             <p className="text-xl text-gray-500 mb-2">
-              {selectedProduct.price}
+              {/*selectedProduct.price*/}
+              ₹ {Number(selectedProduct.price).toLocaleString("en-IN")}
             </p>
 
             <p className="text-gray-600 mb-4">{selectedProduct.description}</p>
@@ -162,7 +192,9 @@ const ProductDetails = () => {
                 >
                   -
                 </button>
-                <span className="text-lg min-w-[32px] text-center">{quantity}</span>
+                <span className="text-lg min-w-[32px] text-center">
+                  {quantity}
+                </span>
                 <button
                   onClick={() => handleQuantityChange("plus")}
                   className="px-2 py-2 bg-gray-200 text-lg rounded cursor-pointer"
@@ -201,6 +233,12 @@ const ProductDetails = () => {
               </table>
             </div>
           </div>
+        </div>
+        <div className="mt-20">
+          <h2 className="text-2xl text-center font-medium mb-4">
+            You May Also Like
+          </h2>
+          <ProductGrid products={similarProducts}/>
         </div>
       </div>
     </div>
