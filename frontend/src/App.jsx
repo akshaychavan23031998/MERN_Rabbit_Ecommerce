@@ -4,10 +4,12 @@ import UserLayout from './components/Layout/UserLayout'
 import Privacy_Policy_Page from './pages/Privacy_Policy_Page'
 import Terms_of_Service_Page from './pages/Terms_of_Service_Page'
 import Home from './pages/Home'
+import { Toaster, toast } from 'sonner';
 
 const App = () => {
   return (
     <BrowserRouter>
+    <Toaster position='top-right'/>
       <Routes>
         {/* User Layout */}
         <Route path='/' element={<UserLayout />}>
