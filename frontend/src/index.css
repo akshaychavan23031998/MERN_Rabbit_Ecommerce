@@ -13,3 +13,14 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+html, body {
+  overflow: hidden;
+}
+[data-scroll-container]::-webkit-scrollbar {
+  display: none;
+}
+[data-scroll-container] {
+  scrollbar-width: none;
+}
+
