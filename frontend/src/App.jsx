@@ -5,6 +5,8 @@ import Privacy_Policy_Page from './pages/Privacy_Policy_Page'
 import Terms_of_Service_Page from './pages/Terms_of_Service_Page'
 import Home from './pages/Home'
 import { Toaster, toast } from 'sonner';
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 const App = () => {
   return (
@@ -14,6 +16,8 @@ const App = () => {
         {/* User Layout */}
         <Route path='/' element={<UserLayout />}>
           <Route index element={<Home/>}/>
+          <Route path='login' element={<Login/>}/>
+          <Route path='register' element={<Register/>}/>
         </Route>
         <Route>{/* Admin Layout */}</Route>
         <Route path="/privacy-policy" element={<Privacy_Policy_Page />} />
