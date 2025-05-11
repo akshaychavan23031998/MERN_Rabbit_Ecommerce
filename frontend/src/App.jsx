@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import CollectionPage from "./pages/CollectionPage";
 import LocomotiveScroll from "locomotive-scroll";
+import ProductDetails from "./components/Products/ProductDetails";
 
 const App = () => {
   const locomotiveScroll = new LocomotiveScroll();
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="register" element={<Register />} />
           <Route path="profile" element={<Profile />} />
           <Route path="collections/:collection" element={<CollectionPage />} />
+          <Route path="product/:id" element={<ProductDetails />}/>
         </Route>
         <Route>{/* Admin Layout */}</Route>
         <Route path="/privacy-policy" element={<Privacy_Policy_Page />} />
