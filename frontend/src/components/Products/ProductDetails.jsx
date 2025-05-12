@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
+import { useParams } from "react-router-dom";
 
 const selectedProduct = {
   name: "Stylish Jacket",
@@ -51,6 +52,7 @@ const similarProducts = [
 ]
 
 const ProductDetails = () => {
+  const { id } = useParams();
   const [mainImage, setMainImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
