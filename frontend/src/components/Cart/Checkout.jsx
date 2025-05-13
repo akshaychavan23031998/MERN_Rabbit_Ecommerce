@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PayPalButton from "./PayPalButton";
 
@@ -15,11 +15,11 @@ const cart = {
       name: "Shooes",
       size: "M",
       color: "Black",
-      price: 1200,
+      price: 1800,
       image: "https://picsum.photos/150?random=2",
     },
   ],
-  totalPrice: 2400,
+  totalPrice: 3000,
 };
 
 const Checkout = () => {
@@ -35,6 +35,25 @@ const Checkout = () => {
     phone: "",
   });
 
+  const [exchangeRate, setExchangeRate] = useState(83); // Default fallback
+  const totalInINR = cart.totalPrice;
+
+  useEffect(() => {
+    // Fetch latest INR to USD rate
+    fetch("https://api.exchangerate.host/latest?base=INR&symbols=USD")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.rates && data.rates.USD) {
+          setExchangeRate(data.rates.USD);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch exchange rate, using fallback", err);
+      });
+  }, []);
+
+  const amountInUSD = (totalInINR / exchangeRate).toFixed(2); // Multiply because base=INR, it gives the value for 1 rs.
+
   const handleCreateCheckout = (e) => {
     e.preventDefault();
     setCheckoutId(123);
@@ -43,6 +62,17 @@ const Checkout = () => {
   const handlePaymentSuccess = (details) => {
     console.log("Payment Success", details);
     navigate("/order-confirmation");
+  };
+
+  const formatCurrencyWithSpace = (value, locale, currency) => {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      currencyDisplay: "narrowSymbol", // optional, for compact symbol
+      maximumFractionDigits: 0,
+    })
+      .format(value)
+      .replace(/(\D)(\d)/, "$1 $2"); // 👈 adds space between symbol and number
   };
 
   return (
@@ -190,7 +220,7 @@ const Checkout = () => {
                 <h3 className="text-lg mb-4">Pay With Paypal</h3>
                 {/* Paypal Component */}
                 <PayPalButton
-                  amount={cart.totalPrice.toFixed(2)}
+                  amount={amountInUSD}
                   onSuccess={handlePaymentSuccess}
                   onError={(err) => {
                     console.error("PayPal error:", err);
@@ -201,6 +231,64 @@ const Checkout = () => {
             )}
           </div>
         </form>
+      </div>
+      {/* Right Side */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h3 className="text-lg mb-4">Order Summary</h3>
+        <div className="border-t py-4 mb-4">
+          {cart.products.map((product, index) => (
+            <div
+              key={index}
+              className="flex items-start justify-between py-2 border-b"
+            >
+              <div className="flex items-start">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-20 h-24 object-cover mr-4"
+                />
+                <div>
+                  <h3 className="text-md">{product.name}</h3>
+                  <p className="text-gray-500">Size: {product.size}</p>
+                  <p className="text-gray-500">Color: {product.color}</p>
+                </div>
+              </div>
+              <p className="text-xl font-bold">
+                {formatCurrencyWithSpace(product.price, "en-IN", "INR", 0)}{" "}
+                <span className="text-sm text-gray-500 font-normal ml-1">
+                  ≈{" "}
+                  {formatCurrencyWithSpace(
+                    (product.price / exchangeRate).toFixed(2),
+                    "en-US",
+                    "USD"
+                  )}
+                </span>
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between items-center text-lg mb-4">
+          <p>Subtotal</p>
+          <p className="text-xl font-bold">
+            {formatCurrencyWithSpace(cart.totalPrice, "en-IN", "INR", 0)}{" "}
+            <span className="text-sm text-gray-500 font-normal ml-1">
+              ≈ {formatCurrencyWithSpace(amountInUSD, "en-US", "USD")}
+            </span>
+          </p>
+        </div>
+        <div className="flex justify-between items-center text-lg">
+          <p>Shipping</p>
+          <p>Free</p>
+        </div>
+        <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
+          <p>Total</p>
+          <p className="text-xl font-bold">
+            {formatCurrencyWithSpace(cart.totalPrice, "en-IN", "INR", 0)}{" "}
+            <span className="text-sm text-gray-500 font-normal ml-1">
+              ≈ {formatCurrencyWithSpace(amountInUSD, "en-US", "USD")}
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );

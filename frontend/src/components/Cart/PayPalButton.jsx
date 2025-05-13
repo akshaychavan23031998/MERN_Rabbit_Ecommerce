@@ -7,6 +7,7 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
       options={{
         "client-id":
           "AZ11wyyFVxAnaaydZ3BbMI1nG7uMAxAzXsre2_XAF9HStSzK_vQ3cXe5WCFsoPosNv6MXE_GK3WqVTRu",
+         currency: "USD",
       }}
     >
       <PayPalButtons
@@ -16,6 +17,7 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
             purchase_units: [
               {
                 amount: {
+                  currency_code: "USD",
                   value: amount,
                 },
               },
