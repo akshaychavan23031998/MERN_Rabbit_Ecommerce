@@ -5,8 +5,7 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
   return (
     <PayPalScriptProvider
       options={{
-        "client-id":
-          "AZ11wyyFVxAnaaydZ3BbMI1nG7uMAxAzXsre2_XAF9HStSzK_vQ3cXe5WCFsoPosNv6MXE_GK3WqVTRu",
+        "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
          currency: "USD",
       }}
     >
