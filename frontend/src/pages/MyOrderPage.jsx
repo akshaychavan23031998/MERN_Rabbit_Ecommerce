@@ -20,7 +20,7 @@ const MyOrderPage = () => {
           createdAt: new Date(),
           shippingAddress: {
             city: "Solapur",
-            country: "India",
+            country: "Bharat",
           },
           orderItems: [
             {
@@ -36,7 +36,7 @@ const MyOrderPage = () => {
           createdAt: new Date(),
           shippingAddress: {
             city: "Solapur",
-            country: "India",
+            country: "Bharat",
           },
           orderItems: [
             {

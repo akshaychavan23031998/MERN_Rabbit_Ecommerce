@@ -8,8 +8,9 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
 
   const navigate = useNavigate();
   const handleCheckout = () => {
+    toggleCartDrawer();
     navigate("/checkout");
-  }
+  };
 
   return (
     <div
@@ -29,16 +30,21 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
       <div className="flex-grow p-4 overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4">Your Card</h2>
         {/*component for card content*/}
-        <CardContents/>
+        <CardContents />
       </div>
 
-       {/*checkout button fixed at bottom*/}
-       <div className="p-4 bg-white sticky bottom-0">
-            <button onClick={handleCheckout} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition">
-                Checkout
-            </button>
-            <p className="text-xs tracking-tighter text-gray-500 mt-2 text-center">Shipping, taxes & discount Codes calculated at checkout.</p>
-       </div>
+      {/*checkout button fixed at bottom*/}
+      <div className="p-4 bg-white sticky bottom-0">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+        >
+          Checkout
+        </button>
+        <p className="text-xs tracking-tighter text-gray-500 mt-2 text-center">
+          Shipping, taxes & discount Codes calculated at checkout.
+        </p>
+      </div>
     </div>
   );
 };

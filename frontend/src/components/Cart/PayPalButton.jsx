@@ -18,7 +18,7 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
               {
                 amount: {
                   currency_code: "USD",
-                  value: amount,
+                  value: amount.toString()
                 },
               },
             ],
