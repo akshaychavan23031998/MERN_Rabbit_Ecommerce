@@ -17,6 +17,7 @@ import OrderDetailsPage from "./pages/OrderDetailsPage";
 import MyOrderPage from "./pages/MyOrderPage";
 import AdminLayout from "./components/Admin/AdminLayout";
 import AdminHomePage from "./pages/AdminHomePage";
+import UserManagment from "./components/Admin/UserManagment";
 
 const App = () => {
   const locomotiveScroll = new LocomotiveScroll();
@@ -47,6 +48,7 @@ const App = () => {
         {/* Admin Layout */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomePage />} />
+          <Route path="users" element={<UserManagment />} />
         </Route>
 
         {/* Policy page routes*/}
