@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import AdminSidebar from "./AdminSidebar";
+import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,10 +19,10 @@ const AdminLayout = () => {
         <h1 className="ml-4 text-xl font-medium ">Admin Dashboard</h1>
       </div>
 
-      {/* Overlay fro mobile sidebar */}
+      {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden"
+          className="fixed inset-0 z-10 bg-black opacity-50 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
@@ -32,9 +33,12 @@ const AdminLayout = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 md:translate-x-0 md:static md:block z-20`}
       >
-            <AdminSidebar />
+        <AdminSidebar />
       </div>
-            {/* Main Content Area */}
+      {/* Main Content Area */}
+      <div className="flex-grow p-6 overflow-auto">
+          <Outlet />
+      </div>
     </div>
   );
 };

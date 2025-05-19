@@ -16,6 +16,7 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
 import MyOrderPage from "./pages/MyOrderPage";
 import AdminLayout from "./components/Admin/AdminLayout";
+import AdminHomePage from "./pages/AdminHomePage";
 
 const App = () => {
   const locomotiveScroll = new LocomotiveScroll();
@@ -34,18 +35,21 @@ const App = () => {
           <Route path="collections/:collection" element={<CollectionPage />} />
           {/*<Route path="product/:id" element={<ProductDetails />}/>*/}
           <Route path="product/:id" element={<ProductDetails />} />
-          <Route path="checkout" element={<Checkout/>}/>
-          <Route path="order-confirmation" element={<OrderConfirmationPage/>}/>
-          <Route path="order/:id" element={<OrderDetailsPage />}/>
-          <Route path="my-orders" element={<MyOrderPage/>}/>
+          <Route path="checkout" element={<Checkout />} />
+          <Route
+            path="order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
+          <Route path="order/:id" element={<OrderDetailsPage />} />
+          <Route path="my-orders" element={<MyOrderPage />} />
         </Route>
 
         {/* Admin Layout */}
         <Route path="/admin" element={<AdminLayout />}>
-          
+          <Route index element={<AdminHomePage />} />
         </Route>
 
-         {/* Policy page routes*/}
+        {/* Policy page routes*/}
         <Route path="/privacy-policy" element={<Privacy_Policy_Page />} />
         <Route path="/terms" element={<Terms_of_Service_Page />} />
       </Routes>
