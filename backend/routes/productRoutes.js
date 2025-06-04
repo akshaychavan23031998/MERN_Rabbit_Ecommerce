@@ -137,8 +137,18 @@ router.put("/:id", protect, admin, async (req, res) => {
 //@route DELETE /api/products/:id
 //@desc delete a product by id
 //@access private, its should be deleted by admin only.
-router.delete("/:id", protect, admin, async(req, res) => {
-  
-})
+router.delete("/:id", protect, admin, async (req, res) => {
+  try {
+    const product = Product.findById(req.params.id);
+    if (product) {
+      await product.deleteOne();
+      res.json({ message: "Product Removed" });
+    } else {
+      res.status(404).json({ message: "Product Not Found" });
+    }
+  } catch (error) {
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
