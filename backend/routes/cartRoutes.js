@@ -59,7 +59,7 @@ router.post("/", async (req, res) => {
       return res.status(200).json(cart);
     } else {
       const newCart = await Cart.create({
-        userId: userId || undefined,
+        user: userId || undefined,
         guestId: guestId || "guest_" + Date.now(),
         products: [
           {
