@@ -16,7 +16,7 @@ const getCart = async (userId, guestId) => {
 };
 
 // @route POST api/cart
-// @desc Ad a product to the cart for a guest or logged in user.
+// @desc Add a product to the cart for a guest or logged in user.
 // @access Public
 
 router.post("/", async (req, res) => {
@@ -83,6 +83,41 @@ router.post("/", async (req, res) => {
   }
 });
 
+// @route PUT api/cart
+// @desc update the product quantity in the card for guest and loggedIn user.
+// @access Public
+router.put("/", async (req, res) => {
+  const { productId, size, color, quantity, guestId, userId } = req.body;
+  try {
+    let cart = await getCart(userId, guestId);
+    if (!cart) return res.status(404).json({ message: "Cart Not Found" });
 
+    const productIndex = cart.products.findIndex(
+      (p) =>
+        p.productId.toString() === productId &&
+        p.size === size &&
+        p.color === color
+    );
+    if (productIndex > -1) {
+      // update quanitity
+      if (quantity > 0) {
+        cart.products[productIndex].quantity = quantity;
+      } else {
+        cart.products.splice(productIndex, 1); // reove the product if the quantity is zero
+      }
+      cart.totalPrice = cart.products.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+      await cart.save();
+      return res.status(200).json(cart);
+    } else {
+      return res.status(404).json({ message: "Product Not Found In Cart" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+});
 
 module.exports = router;
