@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PayPalButton from "./PayPalButton";
+// import PayPalButton from "./PayPalButton";
+import RazorpayButton from "./RazorpayButton";
 
 const cart = {
   products: [
@@ -54,9 +55,34 @@ const Checkout = () => {
 
   const amountInUSD = (totalInINR / exchangeRate).toFixed(2); // Multiply because base=INR, it gives the value for 1 rs.
 
-  const handleCreateCheckout = (e) => {
+  // const handleCreateCheckout = (e) => {
+  //   e.preventDefault();
+  //   setCheckoutId(123);
+  // };
+
+  const handleCreateCheckout = async (e) => {
     e.preventDefault();
-    setCheckoutId(123);
+
+    try {
+      const res = await fetch("http://localhost:9000/api/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // body: JSON.stringify({ amount: totalInINR }),   // In production
+        body: JSON.stringify({ amount: 1 }),   // In testing 1 rs
+      });
+
+      const data = await res.json();
+      console.log("Backend Order Created:", data);
+
+      if (data.id) {
+        setCheckoutId(data.id); // <-- store the Razorpay order_id
+      } else {
+        alert("Failed to create order");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create order. Try again!");
+    }
   };
 
   const handlePaymentSuccess = (details) => {
@@ -217,14 +243,14 @@ const Checkout = () => {
               </button>
             ) : (
               <div>
-                <h3 className="text-lg mb-4">Pay With Paypal</h3>
-                {/* Paypal Component */}
-                <PayPalButton
-                  amount={amountInUSD}
+                <RazorpayButton
+                  amountInINR={totalInINR}
+                  shippingAddress={shippingAddress}
+                  orderId={checkoutId} // <-- pass the real order ID
                   onSuccess={handlePaymentSuccess}
                   onError={(err) => {
-                    console.error("PayPal error:", err);
-                    alert("Something went wrong. Please try again.");
+                    console.error("Razorpay error:", err);
+                    alert("Payment failed. Please try again.");
                   }}
                 />
               </div>
