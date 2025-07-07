@@ -8,6 +8,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const paymentsRoutes = require("./routes/payments.js");
 const checkoutRoutes = require("./routes/checkoutRoutes.js");
 const orderRoutes = require("./routes/orderRoutes.js");
+const uploadRoutes = require("./routes/uploadRoutes.js");
+const subscribeRoute = require("./routes/subscriberRoutes.js");
 
 const app = express();
 app.use(express.json());
@@ -32,6 +34,8 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/payments", paymentsRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api", subscribeRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
