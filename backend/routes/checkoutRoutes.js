@@ -72,7 +72,7 @@ router.post("/:id/finalize", protect, async (req, res) => {
     const checkout = await Checkout.findById(req.params.id);
 
     if (!checkout) {
-      res.status(404).json({ message: "Checkout Not Found" });
+      return res.status(404).json({ message: "Checkout Not Found" });
     }
 
     if (checkout.isPaid && !checkout.isFinalized) {
@@ -90,21 +90,24 @@ router.post("/:id/finalize", protect, async (req, res) => {
         paymentDetails: checkout.paymentDetails,
       });
 
-      //Mark the checkout as finalized
+       //Mark the checkout as finalized
       checkout.isFinalized = true;
       checkout.finalizedAt = Date.now();
       await checkout.save();
       //Delete the cart associated with the user
       await Cart.findOneAndDelete({ user: checkout.user });
+
+      return res.status(201).json({ message: "Checkout Finalized", order: finalOrder });
     } else if (checkout.isFinalized) {
-      res.status(400).json({ message: "Checkout Is Already Finalized" });
+      return res.status(400).json({ message: "Checkout Is Already Finalized" });
     } else {
-      res.status(400).json({ message: "Checkout Is Not Paid" });
+      return res.status(400).json({ message: "Checkout Is Not Paid" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 module.exports = router;
