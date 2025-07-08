@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import login from "../assets/login.webp";
+import { loginUser } from "../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, password }));
+  };
 
   const [errors, setErrors] = useState({});
 
@@ -31,17 +39,18 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return; // stop submission
-    }
-    setErrors({});
-    console.log("Logging in with:", email, password);
-    // proceed with API call or navigation
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const validationErrors = validate();
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return; // stop submission
+  //   }
+  //   setErrors({});
+  //   console.log("Logging in with:", email, password);
+  //   // proceed with API call or navigation
+  //   dispatch(loginUser({ email, password }));
+  // };
 
   return (
     <div className="flex">

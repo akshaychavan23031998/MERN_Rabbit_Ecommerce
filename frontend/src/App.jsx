@@ -22,46 +22,54 @@ import ProductManagement from "./components/Admin/ProductManagement";
 import EditProductPage from "./components/Admin/EditProductPage";
 import OrderManagement from "./components/Admin/OrderManagement";
 
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 const App = () => {
   const locomotiveScroll = new LocomotiveScroll();
   return (
-    <BrowserRouter
-      future={{ v7_startTransition: true, v7_relativeSplatePath: true }}
-    >
-      <Toaster position="top-right" />
-      <Routes>
-        {/* User Layout */}
-        <Route path="/" element={<UserLayout />}>
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="collections/:collection" element={<CollectionPage />} />
-          {/*<Route path="product/:id" element={<ProductDetails />}/>*/}
-          <Route path="product/:id" element={<ProductDetails />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route
-            path="order-confirmation"
-            element={<OrderConfirmationPage />}
-          />
-          <Route path="order/:id" element={<OrderDetailsPage />} />
-          <Route path="my-orders" element={<MyOrderPage />} />
-        </Route>
+    <Provider store={store}>
+      <BrowserRouter
+        future={{ v7_startTransition: true, v7_relativeSplatePath: true }}
+      >
+        <Toaster position="top-right" />
+        <Routes>
+          {/* User Layout */}
+          <Route path="/" element={<UserLayout />}>
+            <Route index element={<Home />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="profile" element={<Profile />} />
+            <Route
+              path="collections/:collection"
+              element={<CollectionPage />}
+            />
+            {/*<Route path="product/:id" element={<ProductDetails />}/>*/}
+            <Route path="product/:id" element={<ProductDetails />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route
+              path="order-confirmation"
+              element={<OrderConfirmationPage />}
+            />
+            <Route path="order/:id" element={<OrderDetailsPage />} />
+            <Route path="my-orders" element={<MyOrderPage />} />
+          </Route>
 
-        {/* Admin Layout */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminHomePage />} />
-          <Route path="users" element={<UserManagment />} />
-          <Route path="products" element={<ProductManagement />} />
-          <Route path="products/:id/edit" element={<EditProductPage />} />
-          <Route path="orders" element={<OrderManagement />} />
-        </Route>
+          {/* Admin Layout */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminHomePage />} />
+            <Route path="users" element={<UserManagment />} />
+            <Route path="products" element={<ProductManagement />} />
+            <Route path="products/:id/edit" element={<EditProductPage />} />
+            <Route path="orders" element={<OrderManagement />} />
+          </Route>
 
-        {/* Policy page routes*/}
-        <Route path="/privacy-policy" element={<Privacy_Policy_Page />} />
-        <Route path="/terms" element={<Terms_of_Service_Page />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Policy page routes*/}
+          <Route path="/privacy-policy" element={<Privacy_Policy_Page />} />
+          <Route path="/terms" element={<Terms_of_Service_Page />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 };
 
