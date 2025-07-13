@@ -140,7 +140,7 @@ const cartSlice = createSlice({
         state.error = action.payload;
         saveCartToStorage(action.payload);
       })
-      .addCase(fetchCart.pending, (state, action) => {
+      .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch cart";
       })
@@ -153,7 +153,7 @@ const cartSlice = createSlice({
         state.error = action.payload;
         saveCartToStorage(action.payload);
       })
-      .addCase(addToCart.pending, (state, action) => {
+      .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to add to cart";
       })
@@ -166,7 +166,7 @@ const cartSlice = createSlice({
         state.error = action.payload;
         saveCartToStorage(action.payload);
       })
-      .addCase(updateCartItemQuantity.pending, (state, action) => {
+      .addCase(updateCartItemQuantity.rejected, (state, action) => {
         state.loading = false;
         state.error =
           action.payload?.message || "Failed to update item quantity";
@@ -180,7 +180,7 @@ const cartSlice = createSlice({
         state.error = action.payload;
         saveCartToStorage(action.payload);
       })
-      .addCase(removeFromCart.pending, (state, action) => {
+      .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to remove item";
       })
@@ -193,7 +193,7 @@ const cartSlice = createSlice({
         state.error = action.payload;
         saveCartToStorage(action.payload);
       })
-      .addCase(mergeCart.pending, (state, action) => {
+      .addCase(mergeCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed merge the cart";
       });
