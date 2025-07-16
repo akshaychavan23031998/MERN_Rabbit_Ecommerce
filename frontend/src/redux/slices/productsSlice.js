@@ -148,9 +148,13 @@ const productsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      // .addCase(fetchProductsByFilters.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.error = Array.isArray(action.payload) ? action.payload : [];
+      // })
       .addCase(fetchProductsByFilters.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = Array.isArray(action.payload) ? action.payload : [];
+        state.products = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(fetchProductsByFilters.rejected, (state, action) => {
         state.loading = false;
@@ -195,7 +199,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.similarProducts = action.payload;
       })
       .addCase(fetchSimilarProducts.rejected, (state, action) => {
         state.loading = false;

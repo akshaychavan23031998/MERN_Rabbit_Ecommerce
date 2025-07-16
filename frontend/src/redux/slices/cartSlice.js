@@ -32,7 +32,10 @@ export const fetchCart = createAsyncThunk(
 // Add an item to the cart for the user or guest
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ productId, quantity, size, color, guestId, userId }, { rejectWithValue }) => {
+  async (
+    { productId, quantity, size, color, guestId, userId },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
@@ -137,7 +140,8 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.cart = action.payload;
+        state.error = null;
         saveCartToStorage(action.payload);
       })
       .addCase(fetchCart.rejected, (state, action) => {
@@ -150,7 +154,8 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.cart = action.payload; // ✅ store updated cart!
+        state.error = null;
         saveCartToStorage(action.payload);
       })
       .addCase(addToCart.rejected, (state, action) => {
