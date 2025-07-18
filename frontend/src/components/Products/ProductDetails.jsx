@@ -178,18 +178,28 @@ const ProductDetails = ({ productId }) => {
                 {selectedProduct.name}
               </h1>
 
-              <p className="text-lg text-gray-600 mb-1 line-through">
-                {/*selectedProduct.originalPrice*/}₹{" "}
-               {Number(selectedProduct?.originalPrice || 0).toLocaleString("en-IN")}
-              </p>
-
-              <p className="text-xl text-gray-500 mb-2">
-                {/*selectedProduct.price*/}₹{" "}
-                {Number(selectedProduct?.price || selectedProduct?.discountPrice || 0).toLocaleString("en-IN")}
-              </p>
+              <div className="mb-4">
+                {selectedProduct.discountPrice ? (
+                  <>
+                    <p className="text-lg text-gray-600 mb-1 line-through">
+                      ₹ {Number(selectedProduct.price).toLocaleString("en-IN")}
+                    </p>
+                    <p className="text-xl text-red-600 font-semibold mb-2">
+                      ₹{" "}
+                      {Number(selectedProduct.discountPrice).toLocaleString(
+                        "en-IN"
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-xl text-gray-900 font-semibold mb-2">
+                    ₹ {Number(selectedProduct.price).toLocaleString("en-IN")}
+                  </p>
+                )}
+              </div>
 
               <p className="text-gray-600 mb-4">
-                 {selectedProduct?.description || "No description available."}
+                {selectedProduct?.description || "No description available."}
               </p>
 
               <div className="mb-4">
