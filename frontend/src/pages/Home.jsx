@@ -96,7 +96,7 @@ const Home = () => {
       <NewArrivals />
 
       {/* Best Seller */}
-      <h2 className="text-3xl text-center font-bold mb-4">Best Seller</h2>
+      <h2 className="text-3xl text-center font-bold">Best Seller</h2>
       {bestSellerProduct ? (
         <ProductDetails productId={bestSellerProduct._id} />
       ) : (
@@ -104,7 +104,7 @@ const Home = () => {
       )}
 
       <div className="container mx-auto">
-        <h2 className="text-3xl text-center font-bold mb-4">
+        <h2 className="text-3xl text-center font-bold">
           Top Wears for Women
         </h2>
         <ProductGrid products={products} loading={loading} error={error} />
