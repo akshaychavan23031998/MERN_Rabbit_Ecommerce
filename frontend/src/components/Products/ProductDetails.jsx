@@ -81,9 +81,20 @@ const ProductDetails = ({ productId }) => {
     }
   }, [dispatch, productFetchId]);
 
+  // useEffect(() => {
+  //   if (selectedProduct?.images?.length > 0) {
+  //     setMainImage(selectedProduct.images[0].url);
+  //   }
+  // }, [selectedProduct]);
+
   useEffect(() => {
-    if (selectedProduct?.images?.length > 0) {
-      setMainImage(selectedProduct.images[0].url);
+    if (selectedProduct) {
+      if (selectedProduct.images?.length > 0) {
+        setMainImage(selectedProduct.images[0].url);
+      }
+      setSelectedColor(""); // Reset on product change
+      setSelectedSize(""); // Optional: reset size too
+      setQuantity(1); // Optional: reset quantity
     }
   }, [selectedProduct]);
 
@@ -226,23 +237,47 @@ const ProductDetails = ({ productId }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 {/* Color */}
                 <div>
-                  <p className="text-gray-700 font-medium">Color:</p>
-                  <div className="flex gap-2 mt-2">
-                    {selectedProduct.colors.map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
-                        className={`w-8 h-8 rounded-full border cursor-pointer ${
-                          selectedColor === color
-                            ? "border-4 border-black"
-                            : "border-gray-300"
-                        }`}
-                        style={{
-                          backgroundColor: color.toLowerCase(),
-                          filter: "brightness(0.5)",
-                        }}
-                      ></button>
-                    ))}
+                  <p className="text-gray-700 font-medium mb-2">Color:</p>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    {selectedProduct.colors.map((color, index) => {
+                      // Format the color string
+                      const safeColor = color.toLowerCase().replace(/\s/g, "");
+                      const isSafeCSSColor = CSS.supports("color", safeColor);
+
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center space-x-1"
+                        >
+                          <button
+                            onClick={() => setSelectedColor(color)}
+                            className={`w-8 h-8 rounded-full border-2 cursor-pointer transition ${
+                              selectedColor === color
+                                ? "ring-2 ring-black border-black"
+                                : "border-gray-300"
+                            }`}
+                            style={{
+                              backgroundColor: isSafeCSSColor
+                                ? safeColor
+                                : "#e5e7eb",
+                              backgroundImage: isSafeCSSColor
+                                ? "none"
+                                : "url('https://img.icons8.com/ios/50/pattern.png')",
+                              backgroundSize: "cover",
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center",
+                              color: "transparent",
+                            }}
+                            title={color}
+                          />
+                          {!isSafeCSSColor && (
+                            <span className="text-xs text-gray-600">
+                              {color}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
