@@ -8,6 +8,8 @@ import {
   fetchSimilarProducts,
 } from "../../redux/slices/productsSlice";
 import { addToCart } from "../../redux/slices/cartSlice";
+// 1. First, import the hook at the top:
+import useCurrencyRate from "../../hooks/useCurrencyRate";
 
 // const selectedProduct = {
 //   name: "Stylish Jacket",
@@ -73,6 +75,7 @@ const ProductDetails = ({ productId }) => {
   // const { loading } = useSelector((state) => state.cart);
 
   const productFetchId = productId || id;
+  const rate = useCurrencyRate();
 
   useEffect(() => {
     if (productFetchId) {
@@ -192,12 +195,23 @@ const ProductDetails = ({ productId }) => {
               <div className="mb-4">
                 {selectedProduct.discountPrice ? (
                   (() => {
-                    const price = Number(selectedProduct.price);
-                    const discountPrice = Number(selectedProduct.discountPrice);
+                    const priceUSD = Number(selectedProduct.price);
+                    const discountUSD = Number(selectedProduct.discountPrice);
+                    const priceINR = Math.round(priceUSD * rate);
+                    const discountINR = Math.round(discountUSD * rate);
                     const discountPercent = Math.round(
-                      ((price - discountPrice) / price) * 100
+                      ((priceUSD - discountUSD) / priceUSD) * 100
                     );
-                    const currencySymbol = "₹"; // Dynamic currency symbol here
+
+                    // FOMO pricing logic
+                    const fomoPrice = (amount) => {
+                      if (amount > 999) return amount - (amount % 100) + 99; // 1048 → 1099
+                      if (amount > 100) return amount - (amount % 10) + 9; // 248 → 249
+                      return amount; // small amounts don't round
+                    };
+
+                    const fomoPriceINR = fomoPrice(priceINR);
+                    const fomoDiscountINR = fomoPrice(discountINR);
 
                     let badgeClass = "bg-green-100 text-green-800";
                     if (discountPercent < 10) {
@@ -209,23 +223,33 @@ const ProductDetails = ({ productId }) => {
                     return (
                       <div className="flex items-center gap-4 mb-4">
                         <p className="text-lg text-gray-600 line-through">
-                          {currencySymbol} {price.toLocaleString("en-IN")}
+                          ₹ {fomoPriceINR.toLocaleString("en-IN")}
                         </p>
                         <p className="text-xl text-red-600 font-semibold">
-                          {currencySymbol}{" "}
-                          {discountPrice.toLocaleString("en-IN")}
+                          ₹ {fomoDiscountINR.toLocaleString("en-IN")}
                         </p>
                         <span
                           className={`text-sm font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${badgeClass}`}
                         >
-                          🔥 SAVE {discountPercent}%
+                          🔥 SAVE {discountPercent}%{" "}
+                          <span className="text-xs">Limited Offer</span>
                         </span>
                       </div>
                     );
                   })()
                 ) : (
                   <p className="text-xl text-gray-900 font-semibold mb-2">
-                    ₹ {Number(selectedProduct.price).toLocaleString("en-IN")}
+                    ₹{" "}
+                    {(() => {
+                      const priceINR = Math.round(
+                        Number(selectedProduct.price) * rate
+                      );
+                      const fomo =
+                        priceINR > 100
+                          ? priceINR - (priceINR % 10) + 9
+                          : priceINR;
+                      return fomo.toLocaleString("en-IN");
+                    })()}
                   </p>
                 )}
               </div>
