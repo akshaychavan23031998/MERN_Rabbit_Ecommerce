@@ -2,42 +2,67 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Async Thunk to fetch products by collection and optional filters
+// export const fetchProductsByFilters = createAsyncThunk(
+//   "products/fetchByFilters",
+//   async ({
+//     collection,
+//     size,
+//     color,
+//     gender,
+//     minPrice,
+//     maxPrice,
+//     sortBy,
+//     search,
+//     category,
+//     material,
+//     brand,
+//     limit,
+//   }) => {
+//     const query = new URLSearchParams();
+//     if (collection) query.append("collection", collection);
+//     if (size) query.append("size", size);
+//     if (color) query.append("color", color);
+//     if (gender) query.append("gender", gender);
+//     if (minPrice) query.append("minPrice", minPrice);
+//     if (maxPrice) query.append("maxPrice", maxPrice);
+//     if (sortBy) query.append("sortBy", sortBy);
+//     if (search) query.append("search", search);
+//     if (category) query.append("category", category);
+//     if (material) query.append("material", material);
+//     if (brand) query.append("brand", brand);
+//     if (limit) query.append("limit", limit);
+
+//     const response = await axios.get(
+//       `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`
+//     );
+//     return response.data;
+//   }
+// );
+
 export const fetchProductsByFilters = createAsyncThunk(
   "products/fetchByFilters",
-  async ({
-    collection,
-    size,
-    color,
-    gender,
-    minPrice,
-    maxPrice,
-    sortBy,
-    search,
-    category,
-    material,
-    brand,
-    limit,
-  }) => {
-    const query = new URLSearchParams();
-    if (collection) query.append("collection", collection);
-    if (size) query.append("size", size);
-    if (color) query.append("color", color);
-    if (gender) query.append("gender", gender);
-    if (minPrice) query.append("minPrice", minPrice);
-    if (maxPrice) query.append("maxPrice", maxPrice);
-    if (sortBy) query.append("sortBy", sortBy);
-    if (search) query.append("search", search);
-    if (category) query.append("category", category);
-    if (material) query.append("material", material);
-    if (brand) query.append("brand", brand);
-    if (limit) query.append("limit", limit);
+  async (filters, { rejectWithValue }) => {
+    try {
+      const query = new URLSearchParams();
 
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`
-    );
-    return response.data;
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          query.append(key, value);
+        }
+      });
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || error.message || "Something went wrong"
+      );
+    }
   }
 );
+
 
 // we can also write this logic in below way, ==>>
 // export const fetchProductsByFilters = createAsyncThunk(
