@@ -13,6 +13,7 @@ const CardContents = ({ cart, userId, guestId }) => {
   const handleAddToCart = (productId, delta, quantity, size, color) => {
     const newQuantity = quantity + delta;
     if (newQuantity >= 1) {
+      console.log("Dispatching quantity update:");
       dispatch(
         updateCartItemQuantity({
           productId,
@@ -27,7 +28,8 @@ const CardContents = ({ cart, userId, guestId }) => {
   };
 
   const handleRemoveFromCart = (productId, size, color) => {
-    dispatch(removeFromCart({ productId, guestId, userId, color, color }));
+    // dispatch(removeFromCart({ productId, guestId, userId, color }));
+    dispatch(removeFromCart({ productId, guestId, userId, color, size }));
   };
 
   return (
@@ -49,29 +51,38 @@ const CardContents = ({ cart, userId, guestId }) => {
                 size: {product.size} | color: {product.color}
               </p>
 
-              <div className="flex items-center mt-2">
+              <div className="flex items-center gap-2 mt-2">
                 <button
-                  onClick={handleAddToCart(
-                    product.productId,
-                    -1,
-                    product.quantity,
-                    product.size,
-                    product.color
-                  )}
-                  className="border rounded px-2 py-1 text-xl font-medium"
+                  onClick={() =>
+                    handleAddToCart(
+                      product.productId,
+                      -1,
+                      product.quantity,
+                      product.size,
+                      product.color
+                    )
+                  }
+                  disabled={product.quantity === 1}
+                  className="w-10 h-10 border rounded text-xl font-bold flex items-center justify-center disabled:opacity-50"
                 >
-                  -
+                  −
                 </button>
-                <span className="mx-4">{product.quantity}</span>
+
+                <span className="w-10 text-center text-lg font-medium">
+                  {product.quantity}
+                </span>
+
                 <button
-                  onClick={handleAddToCart(
-                    product.productId,
-                    1,
-                    product.quantity,
-                    product.size,
-                    product.color
-                  )}
-                  className="border rounded px-2 py-1 text-xl font-medium"
+                  onClick={() =>
+                    handleAddToCart(
+                      product.productId,
+                      1,
+                      product.quantity,
+                      product.size,
+                      product.color
+                    )
+                  }
+                  className="w-10 h-10 border rounded text-xl font-bold flex items-center justify-center"
                 >
                   +
                 </button>

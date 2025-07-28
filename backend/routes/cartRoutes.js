@@ -122,7 +122,8 @@ router.put("/", async (req, res) => {
 // @route DELETE api/cart
 // @desc Remove a product from the cart
 // @access Public
-router.delete("/", async (req, res) => {
+router.post("/remove", async (req, res) => {
+  console.log("🔥 Hit /api/cart/remove");
   const { productId, size, color, quantity, guestId, userId } = req.body;
   try {
     let cart = await getCart(userId, guestId);
