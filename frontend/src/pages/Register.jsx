@@ -1,15 +1,37 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import register from "../assets/register.webp";
 import { registerUser } from "../redux/slices/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { mergeCart } from "../redux/slices/cartSlice";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  // const dispatch = useDispatch();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, guestId } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+
+  // get redirect paramater and check if its checkout or something
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+  const isCheckoutRedirect = redirect.includes("checkout");
+
+  useEffect(() => {
+    if (user) {
+      if (cart?.products.length > 0 && guestId) {
+        dispatch(mergeCart({ guestId, user })).then(() => {
+          navigate(isCheckoutRedirect ? "/checkout" : "/");
+        });
+      } else {
+        navigate(isCheckoutRedirect ? "/checkout" : "/");
+      }
+    }
+  }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
 
   const validate = () => {
     const newErrors = {};
@@ -41,7 +63,8 @@ const Register = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  //
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -49,10 +72,33 @@ const Register = () => {
       return;
     }
     setErrors({});
-    console.log("Registering with:", name, email, password);
-    // proceed with API call
-    dispatch(registerUser({ name, email, password }));
+
+    try {
+      const resultAction = await dispatch(
+        registerUser({ name, email, password })
+      );
+      const userData = resultAction.payload;
+
+      if (userData) {
+        // Optional: handle local redirection if needed here
+      }
+    } catch (err) {
+      console.error("Registration failed", err);
+      // Optionally set error state
+    }
   };
+
+  //   e.preventDefault();
+  //   const validationErrors = validate();
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
+  //   setErrors({});
+  //   console.log("Registering with:", name, email, password);
+  //   // proceed with API call
+  //   dispatch(registerUser({ name, email, password }));
+  // };
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -137,7 +183,10 @@ const Register = () => {
           </button>
           <p className="mt-6 text-center text-sm">
             Already have an account ?{" "}
-            <Link to="/login" className="text-blue-500">
+            <Link
+              to={`/login?redirect=${encodeURIComponent(redirect)}`}
+              className="text-blue-500"
+            >
               Login
             </Link>
           </p>
