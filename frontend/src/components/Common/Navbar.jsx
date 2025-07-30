@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   HiBars3BottomRight,
@@ -14,6 +14,7 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
   const { cart } = useSelector((state) => state.cart);
+  const navRef = useRef(null);
 
   const cartItemCount =
     cart?.products?.reduce((total, products) => total + products.quantity, 0) ||
@@ -26,6 +27,31 @@ const Navbar = () => {
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        navDrawerOpen &&
+        navRef.current &&
+        !navRef.current.contains(e.target)
+      ) {
+        setNavDrawerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [navDrawerOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && navDrawerOpen) {
+        setNavDrawerOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [navDrawerOpen]);
 
   return (
     <>
@@ -104,6 +130,7 @@ const Navbar = () => {
 
       {/*Mobile Navigation*/}
       <div
+        ref={navRef}
         className={`fixed top-0 left-0 w-3/4 sm:w-1/2 md:w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 z-50 ${
           navDrawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}

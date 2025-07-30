@@ -108,13 +108,13 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
   // ESC key close
   useEffect(() => {
     const escHandler = (e) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && drawerOpen) {
         handleClose();
       }
     };
     document.addEventListener("keydown", escHandler);
     return () => document.removeEventListener("keydown", escHandler);
-  }, []);
+  }, [drawerOpen]); // important to watch drawerOpen state
 
   const handleClose = () => {
     setIsVisible(false);
@@ -130,20 +130,21 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
   };
 
   const handleCheckout = () => {
-  toggleCartDrawer();
-  if (!user) {
-    navigate("/login?redirect=checkout");
-  } else {
-    navigate("/checkout");
-  }
-};
-
+    toggleCartDrawer();
+    if (!user) {
+      navigate("/login?redirect=checkout");
+    } else {
+      navigate("/checkout");
+    }
+  };
 
   return (
     <div
       className={`fixed inset-0 z-40 flex justify-end transition-opacity duration-300 ${
         isMounted ? "pointer-events-auto" : "pointer-events-none"
-      } ${isVisible ? "opacity-100 bg-black/30 backdrop-blur-sm" : "opacity-0"}`}
+      } ${
+        isVisible ? "opacity-100 bg-black/30 backdrop-blur-sm" : "opacity-0"
+      }`}
       onClick={handleOverlayClick}
     >
       <div
