@@ -24,3 +24,10 @@ html, body {
   scrollbar-width: none;
 }
 
+.no-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+
