@@ -99,6 +99,7 @@ import UserManagment from "./components/Admin/UserManagment";
 import ProductManagement from "./components/Admin/ProductManagement";
 import EditProductPage from "./components/Admin/EditProductPage";
 import OrderManagement from "./components/Admin/OrderManagement";
+import ProtectedRoutes from "./components/Common/ProtectedRoutes";
 
 const App = () => {
   // Initialize LocomotiveScroll if needed
@@ -119,13 +120,23 @@ const App = () => {
           <Route path="collections/:collection" element={<CollectionPage />} />
           <Route path="product/:id" element={<ProductDetails />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="order-confirmation" element={<OrderConfirmationPage />} />
+          <Route
+            path="order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
           <Route path="order/:id" element={<OrderDetailsPage />} />
           <Route path="my-orders" element={<MyOrderPage />} />
         </Route>
 
         {/* Admin Layout */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoutes role="admin">
+              <AdminLayout />
+            </ProtectedRoutes>
+          }
+        >
           <Route index element={<AdminHomePage />} />
           <Route path="users" element={<UserManagment />} />
           <Route path="products" element={<ProductManagement />} />

@@ -1,5 +1,11 @@
 import React from "react";
-import { FaBoxOpen, FaClipboardList, FaSignOutAlt, FaStore, FaUser } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaClipboardList,
+  FaSignOutAlt,
+  FaStore,
+  FaUser,
+} from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
@@ -10,11 +16,13 @@ const AdminSidebar = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <Link to="/admin" className="text-2xl font-medium">
+        <Link to="/" className="text-2xl font-medium">
           Rabbit
         </Link>
       </div>
-      <h2 className="text-xl font-medium mb-6 text-center">Admin Dashboard</h2>
+      <Link to="/admin" className="text-xl font-medium mb-6 text-center">
+        Admin Dashboard
+      </Link>
       <nav className="flex flex-col space-y-2">
         <NavLink
           to="/admin/users"
