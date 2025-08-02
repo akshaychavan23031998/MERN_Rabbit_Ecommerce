@@ -77,8 +77,8 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
   const navigate = useNavigate();
   const drawerRef = useRef(null);
   const { user, guestId } = useSelector((state) => state.auth);
-  // const { cart } = useSelector((state) => state.cart);
-  const cart = useSelector((state) => state.cart);
+  const { cart } = useSelector((state) => state.cart);
+  // const cart = useSelector((state) => state.cart);
   const userId = user ? user._id : null;
 
   const [isMounted, setIsMounted] = useState(false);
@@ -139,6 +139,8 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
     }
   };
 
+  const processedProducts = Object.values(cart.products || {});
+
   return (
     <div
       className={`fixed inset-0 z-40 flex justify-end transition-opacity duration-300 ${
@@ -166,8 +168,12 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
         {/* Cart Content */}
         <div className="flex-grow p-4 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
-          {cart && cart?.products?.length > 0 ? (
-            <CardContents cart={cart} userId={userId} guestId={guestId} />
+          {cart && processedProducts.length > 0 ? (
+            <CardContents
+              cart={{ ...cart, products: processedProducts }}
+              userId={userId}
+              guestId={guestId}
+            />
           ) : (
             <p>Your cart is empty</p>
           )}
@@ -175,7 +181,7 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
 
         {/* Checkout */}
         <div className="p-4 bg-white sticky bottom-0">
-          {cart && cart?.products?.length > 0 && (
+          {cart && processedProducts.length > 0 && (
             <>
               <button
                 onClick={handleCheckout}

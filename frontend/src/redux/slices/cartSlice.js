@@ -113,7 +113,6 @@ export const removeFromCart = createAsyncThunk(
   }
 );
 
-
 // Merge the guest cart into user cart
 export const mergeCart = createAsyncThunk(
   "cart/mergeCart",
@@ -197,21 +196,13 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      // .addCase(removeFromCart.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.error = action.payload;
-      //   saveCartToStorage(action.payload);
-      // })
-      // .addCase(removeFromCart.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.error = action.payload?.message || "Failed to remove item";
-      // })
       .addCase(removeFromCart.fulfilled, (state, action) => {
-        // ✅ update cart state with new data from backend
-        state.products = action.payload.products;
-        state.totalPrice = action.payload.totalPrice;
+        state.loading = false;
+        state.cart = action.payload; // ✅ update entire cart
+        saveCartToStorage(action.payload); // persist to localStorage
         state.error = null;
       })
+
       .addCase(removeFromCart.rejected, (state, action) => {
         state.error = action.payload;
       })
