@@ -1,63 +1,34 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchUserOrders } from "../redux/slices/orderSlice";
 
 const MyOrderPage = () => {
-  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 2,
-    }).format(value).replace('₹', '₹ ');
-  };
+  const { orders, loading, error } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    //simulate fetching the orders
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          _id: "123456",
-          createdAt: new Date(),
-          shippingAddress: {
-            city: "Solapur",
-            country: "Bharat",
-          },
-          orderItems: [
-            {
-              name: "Prodcuct 1",
-              image: "https://picsum.photos/500/500?random=1",
-            },
-          ],
-          totalPrice: 100,
-          isPaid: true,
-        },
-        {
-          _id: "234565",
-          createdAt: new Date(),
-          shippingAddress: {
-            city: "Solapur",
-            country: "Bharat",
-          },
-          orderItems: [
-            {
-              name: "Prodcuct 2",
-              image: "https://picsum.photos/500/500?random=2",
-            },
-          ],
-          totalPrice: 100,
-          isPaid: true,
-        },
-      ];
-      setOrders(mockOrders);
-    }, 1000);
-  }, []);
+    dispatch(fetchUserOrders());
+  }, [dispatch]);
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    })
+      .format(value)
+      .replace("₹", "₹ ");
+  };
 
   const handleRowClick = (orderId) => {
     navigate(`/order/${orderId}`);
-  }
+  };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <h2 className="text-xl sm:text-2xl font-bold mb-6">My Orders</h2>
