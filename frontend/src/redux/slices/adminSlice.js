@@ -36,6 +36,22 @@ export const addUser = createAsyncThunk(
 );
 
 // Update the user Info
+// export const updateUser = createAsyncThunk(
+//   "admin/updateUser",
+//   async ({ id, name, email, role }) => {
+//     const response = await axios.put(
+//       `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
+//       { name, email, role },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+//         },
+//       }
+//     );
+//     return response.data.user;
+//   }
+// );
+
 export const updateUser = createAsyncThunk(
   "admin/updateUser",
   async ({ id, name, email, role }) => {
@@ -48,7 +64,8 @@ export const updateUser = createAsyncThunk(
         },
       }
     );
-    return response.data.user;
+
+    return response.data; // ✅ response.data is already the user object
   }
 );
 
@@ -86,16 +103,28 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      // .addCase(updateUser.fulfilled, (state, action) => {
+      //   const updatedUser = action.payload; // No `.user` since it's already the user object
+
+      //   if (!updatedUser || !updatedUser._id) return;
+
+      //   const index = state.users.findIndex(
+      //     (user) => user._id === updatedUser._id
+      //   );
+      //   if (index !== -1) {
+      //     state.users[index] = updatedUser;
+      //   }
+      // })
+
       .addCase(updateUser.fulfilled, (state, action) => {
-        const updatedUser = action.payload; // No `.user` since it's already the user object
+        const updatedUser = action.payload;
 
-        if (!updatedUser || !updatedUser._id) return;
-
-        const index = state.users.findIndex(
+        const userIndex = state.users.findIndex(
           (user) => user._id === updatedUser._id
         );
-        if (index !== -1) {
-          state.users[index] = updatedUser;
+
+        if (userIndex !== -1) {
+          state.users[userIndex] = updatedUser;
         }
       })
 
