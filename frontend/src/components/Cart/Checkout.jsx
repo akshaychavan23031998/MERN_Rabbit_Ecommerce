@@ -91,7 +91,7 @@ const Checkout = () => {
     }
     try {
       const res = await fetch(
-        "http://localhost:9000/api/payments/create-order",
+        `${import.meta.env.VITE_BACKEND_URL}/api/payments/create-order`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
