@@ -6,28 +6,29 @@
   font-style: normal;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+/* ✅ Universal scrollbar hiding */
+html, body {
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
 }
 
-html, body {
-  overflow: hidden;
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* ✅ Locomotive scroll container support */
+[data-scroll-container] {
+  min-height: 100vh;
+  scrollbar-width: none;       /* Firefox */
 }
 [data-scroll-container]::-webkit-scrollbar {
-  display: none;
-}
-[data-scroll-container] {
-  scrollbar-width: none;
+  display: none !important;    /* Chrome, Safari */
 }
 
+/* ✅ Optional: disable scroll when drawer/cart open */
 .no-scroll {
   overflow: hidden;
   position: fixed;
   width: 100%;
 }
-
-
