@@ -1,18 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearCart } from "../redux/slices/cartSlice";
+import Confetti from "react-confetti";
+import { useWindowSize } from "@react-hook/window-size";
 
 const OrderConfirmationPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { checkout } = useSelector((state) => state.checkout);
+  const [confettiVisible, setConfettiVisible] = useState(true);
+  const [confettiOpacity, setConfettiOpacity] = useState(1);
+  const [width, height] = useWindowSize();
 
   //clear the cart when the order is confirmed
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setShowConfetti(false), 4000);
+  //   if (checkout && checkout._id) {
+  //     dispatch(clearCart());
+  //     localStorage.removeItem("cart");
+  //   } else {
+  //     navigate("/my-orders");
+  //   }
+  //   return () => clearTimeout(timer);
+  // }, [checkout, dispatch, navigate]);
+
   useEffect(() => {
     if (checkout && checkout._id) {
       dispatch(clearCart());
       localStorage.removeItem("cart");
+
+      // Fade out after 7 seconds
+      const fadeTimeout = setTimeout(() => {
+        const fadeInterval = setInterval(() => {
+          setConfettiOpacity((prev) => {
+            if (prev <= 0.05) {
+              clearInterval(fadeInterval);
+              setConfettiVisible(false);
+              return 0;
+            }
+            return prev - 0.05;
+          });
+        }, 50); // fades in 1s
+      }, 7000); // 🕒 wait 7s before starting fade
+
+      return () => clearTimeout(fadeTimeout);
     } else {
       navigate("/my-orders");
     }
@@ -26,6 +58,26 @@ const OrderConfirmationPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white">
+      {/* 🎊 Confetti blast! */}
+      {/* 🎊 Confetti blast with smooth fade */}
+      {confettiVisible && (
+        <div
+          style={{
+            opacity: confettiOpacity,
+            transition: "opacity 0.5s linear",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 9999,
+            pointerEvents: "none",
+          }}
+        >
+          <Confetti width={width} height={height} />
+        </div>
+      )}
+
       <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">
         Thank You For Your Order!
       </h1>
@@ -52,7 +104,7 @@ const OrderConfirmationPage = () => {
           </div>
           {/* Order Items */}
           <div className="mb-20">
-            {checkout.checkOutItems.map((item) => (
+            {checkout?.checkOutItems?.map((item) => (
               <div className="flex items-center mb-4" key={item.productId}>
                 <img
                   src={item.image}
@@ -77,7 +129,7 @@ const OrderConfirmationPage = () => {
             {/* Payment Info */}
             <div>
               <h4 className="text-lg font-semibold mb-2">Payment</h4>
-              <p className="text-gray-600">Paypal</p>
+              <p className="text-gray-600">Razorpay</p>
             </div>
             {/* Delivery Info */}
             <div>

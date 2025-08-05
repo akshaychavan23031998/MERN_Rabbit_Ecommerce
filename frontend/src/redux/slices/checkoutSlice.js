@@ -29,7 +29,15 @@ const checkoutSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    // ✅ Manually set checkout (for post-payment flow)
+    setCheckout: (state, action) => {
+      state.checkout = action.payload;
+    },
+    clearCart: (state) => {
+      state.checkout = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createCheckout.pending, (state) => {
@@ -43,5 +51,7 @@ const checkoutSlice = createSlice({
       });
   },
 });
+
+export const { setCheckout, clearCart } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

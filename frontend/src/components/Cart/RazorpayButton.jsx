@@ -2,7 +2,13 @@
 
 import React from "react";
 
-const RazorpayButton = ({ amountInINR, shippingAddress, onSuccess, onError, orderId }) => {
+const RazorpayButton = ({
+  amountInINR,
+  shippingAddress,
+  onSuccess,
+  onError,
+  orderId,
+}) => {
   const loadRazorpay = () => {
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
