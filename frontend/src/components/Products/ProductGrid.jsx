@@ -9,8 +9,16 @@ const ProductGrid = ({ products, loading, error }) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // if (!Array.isArray(products) || products.length === 0) {
+  //   return <p>No products found.</p>;
+  // }
+
   if (!Array.isArray(products) || products.length === 0) {
-    return <p>No products found.</p>;
+    return (
+      <div className="flex justify-center items-center h-64 text-gray-600 text-lg">
+        No products found.
+      </div>
+    );
   }
 
   return (
