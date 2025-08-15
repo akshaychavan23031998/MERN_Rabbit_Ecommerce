@@ -101,6 +101,54 @@ const ProductDetails = ({ productId }) => {
     }
   }, [selectedProduct]);
 
+  function getColorCodeFromName(colorName) {
+    if (!colorName) return null;
+
+    const raw = colorName.trim();
+    const lower = raw.toLowerCase();
+
+    // 1. If already valid hex / rgb / hsl / keyword, return it
+    if (
+      /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(raw) ||
+      /^rgb(a)?\(/i.test(raw) ||
+      /^hsl(a)?\(/i.test(raw) ||
+      CSS.supports("color", lower)
+    ) {
+      return raw;
+    }
+
+    // 2. Try removing spaces ("navy blue" → "navyblue")
+    const noSpace = lower.replace(/\s+/g, "");
+    if (CSS.supports("color", noSpace)) {
+      return noSpace;
+    }
+
+    // 3. Try only the first word ("navy blue" → "navy")
+    const firstWord = lower.split(" ")[0];
+    if (CSS.supports("color", firstWord)) {
+      return firstWord;
+    }
+
+    // 4. Last resort: use a hidden element to see if browser resolves it
+    const temp = document.createElement("div");
+    temp.style.color = raw;
+    document.body.appendChild(temp);
+    const computed = getComputedStyle(temp).color;
+    document.body.removeChild(temp);
+
+    // If browser resolved to an RGB value, return that
+    if (
+      computed &&
+      computed !== "rgb(0, 0, 0)" &&
+      raw.toLowerCase() !== "black"
+    ) {
+      return computed;
+    }
+
+    // 5. Fallback (pattern swatch)
+    return null;
+  }
+
   const handleQuantityChange = (action) => {
     if (action === "plus") setQuantity((prev) => prev + 1);
     if (action === "minus" && quantity > 1) setQuantity((prev) => prev - 1);
@@ -264,42 +312,31 @@ const ProductDetails = ({ productId }) => {
                   <p className="text-gray-700 font-medium mb-2">Color:</p>
                   <div className="flex gap-2 mt-2 flex-wrap">
                     {selectedProduct.colors.map((color, index) => {
-                      // Format the color string
-                      const safeColor = color.toLowerCase().replace(/\s/g, "");
-                      const isSafeCSSColor = CSS.supports("color", safeColor);
+                      const resolved = getColorCodeFromName(color);
 
                       return (
-                        <div
+                        <button
                           key={index}
-                          className="flex items-center space-x-1"
-                        >
-                          <button
-                            onClick={() => setSelectedColor(color)}
-                            className={`w-8 h-8 rounded-full border-2 cursor-pointer transition ${
-                              selectedColor === color
-                                ? "ring-2 ring-black border-black"
-                                : "border-gray-300"
-                            }`}
-                            style={{
-                              backgroundColor: isSafeCSSColor
-                                ? safeColor
-                                : "#e5e7eb",
-                              backgroundImage: isSafeCSSColor
-                                ? "none"
-                                : "url('https://img.icons8.com/ios/50/pattern.png')",
-                              backgroundSize: "cover",
-                              backgroundRepeat: "no-repeat",
-                              backgroundPosition: "center",
-                              color: "transparent",
-                            }}
-                            title={color}
-                          />
-                          {!isSafeCSSColor && (
-                            <span className="text-xs text-gray-600">
-                              {color}
-                            </span>
-                          )}
-                        </div>
+                          onClick={() => setSelectedColor(color)}
+                          className={`w-8 h-8 rounded-full border-2 cursor-pointer transition ${
+                            selectedColor === color
+                              ? "ring-2 ring-black border-black"
+                              : "border-gray-300"
+                          }`}
+                          style={{
+                            backgroundColor: resolved ?? "#e5e7eb",
+                            backgroundImage: resolved
+                              ? "none"
+                              : "linear-gradient(45deg, #cbd5e1 25%, transparent 25%),\
+               linear-gradient(-45deg, #cbd5e1 25%, transparent 25%),\
+               linear-gradient(45deg, transparent 75%, #cbd5e1 75%),\
+               linear-gradient(-45deg, transparent 75%, #cbd5e1 75%)",
+                            backgroundSize: "10px 10px",
+                            backgroundPosition: "0 0, 0 5px, 5px -5px, -5px 0",
+                          }}
+                          title={color}
+                          aria-label={color}
+                        />
                       );
                     })}
                   </div>
