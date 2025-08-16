@@ -104,7 +104,7 @@ const Footer = () => {
               target="_blank"
               href="https://github.com/akshaychavan23031998"
             >
-              <FaGithub className="h-4 w-4" />
+              <FaGithub className='h-5 w-5' />
             </a>
 
             <a
@@ -113,7 +113,7 @@ const Footer = () => {
               target="_blank"
               href="https://www.linkedin.com/in/akshay-chavan23/"
             >
-              <FaLinkedin className="h-4 w-4" />
+              <FaLinkedin className='h-5 w-5' />
             </a>
 
             <a
@@ -122,7 +122,7 @@ const Footer = () => {
               target="_blank"
               href="https://x.com/AkshayC23480775"
             >
-              <RiTwitterXLine className="h-4 w-4" />
+              <RiTwitterXLine className='h-5 w-5' />
             </a>
           </div>
           <p className="text-gray-500">Call Us</p>

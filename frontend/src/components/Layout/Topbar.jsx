@@ -12,15 +12,15 @@ const Topbar = () => {
         <div className='container mx-auto flex justify-between items-center py-3 px-4'>
             <div className='hidden md:flex items-center space-x-4'>
                 <a href='https://github.com/akshaychavan23031998' className='hover:text-gray-300'>
-                    <FaGithub className='h-4 w-4'/>
+                    <FaGithub className='h-5 w-5'/>
                 </a>
 
                 <a href='https://www.linkedin.com/in/akshay-chavan23/' className='hover:text-gray-300'>
-                    <FaLinkedin className='h-4 w-4'/>
+                    <FaLinkedin className='h-5 w-5'/>
                 </a>
 
                 <a href='https://x.com/AkshayC23480775' className='hover:text-gray-300'>
-                    <RiTwitterXLine className='h-4 w-4'/>
+                    <RiTwitterXLine className='h-5 w-5'/>
                 </a>
             </div>
             <div className='text-sm text-center flex-grow'>
