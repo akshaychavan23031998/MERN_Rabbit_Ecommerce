@@ -139,7 +139,8 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
     }
   };
 
-  const processedProducts = Object.values(cart.products || {});
+  // const processedProducts = Object.values(cart.products || {});
+  const processedProducts = cart?.products || [];
 
   return (
     <div
@@ -168,12 +169,13 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
         {/* Cart Content */}
         <div className="flex-grow p-4 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
-          {cart && processedProducts.length > 0 ? (
-            <CardContents
-              cart={{ ...cart, products: processedProducts }}
-              userId={userId}
-              guestId={guestId}
-            />
+          {(cart?.products?.length ?? 0) > 0 ? (
+            // <CardContents
+            //   cart={{ ...cart, products: processedProducts }}
+            //   userId={userId}
+            //   guestId={guestId}
+            // />
+            <CardContents cart={cart} userId={userId} guestId={guestId} />
           ) : (
             <p>Your cart is empty</p>
           )}

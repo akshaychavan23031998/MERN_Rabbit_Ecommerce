@@ -6,26 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { createCheckout, setCheckout } from "../../redux/slices/checkoutSlice";
 import axios from "axios";
 import { toast } from "sonner";
-
-const cart = {
-  products: [
-    {
-      name: "Stylish Jacket",
-      size: "M",
-      color: "Black",
-      price: 1200,
-      image: "https://picsum.photos/150?random=1",
-    },
-    {
-      name: "Shooes",
-      size: "M",
-      color: "Black",
-      price: 1800,
-      image: "https://picsum.photos/150?random=2",
-    },
-  ],
-  totalPrice: 3000,
-};
+import useCurrencyRate from "../../hooks/useCurrencyRate";
+import { formatPriceWithPsychology } from "../../utils/priceUtils";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -46,6 +28,27 @@ const Checkout = () => {
     phone: "",
   });
 
+  const rate = useCurrencyRate();
+
+  // Prefer what the PDP stored on the cart item; fall back to computing it here
+  const unitPriceINR = (item) => {
+    // item.priceINR is already INR (number) if PDP sent it
+    if (item.priceINR != null) return Number(item.priceINR);
+
+    // Otherwise compute from USD base (discount first) using the same formatter
+    const baseUSD = Number(item.discountPrice ?? item.price);
+    return formatPriceWithPsychology(baseUSD, rate);
+  };
+
+  // line = unit × qty
+  const linePriceINR = (item) => unitPriceINR(item) * (item.quantity ?? 1);
+
+  // subtotal from cart items
+  const subtotalINR = cart.products.reduce(
+    (sum, p) => sum + linePriceINR(p),
+    0
+  );
+
   // Ensure cart is loaded before proceeding
   useEffect(() => {
     if (!cart || !cart.products || cart.products.length === 0) {
@@ -54,7 +57,8 @@ const Checkout = () => {
   }, [cart, navigate]);
 
   const [exchangeRate, setExchangeRate] = useState(83); // Default fallback
-  const totalInINR = cart.totalPrice;
+  // const totalInINR = cart.totalPrice;
+  const totalInINR = subtotalINR;
 
   useEffect(() => {
     // Fetch latest INR to USD rate
@@ -71,52 +75,6 @@ const Checkout = () => {
   }, []);
 
   const amountInUSD = (totalInINR / exchangeRate).toFixed(2); // Multiply because base=INR, it gives the value for 1 rs.
-
-  // const handleCreateCheckout = (e) => {
-  //   e.preventDefault();
-  //   setCheckoutId(123);
-  // };
-
-  // const handleCreateCheckout = async (e) => {
-  //   e.preventDefault();
-  //   if (cart && cart.products.length > 0) {
-  //     const res = await dispatch(
-  //       createCheckout({
-  //         checkoutItems: cart.products,
-  //         shippingAddress,
-  //         paymentMethod: "razorpay",
-  //         // totalPrice: cart.totalInINR,
-  //         totalPrice: totalInINR,
-  //       })
-  //     );
-  //     if (res.payload && res.payload._id) {
-  //       setCheckoutId(res.payload._id); //set checkout ID if checkout was successfull
-  //     }
-  //   }
-  //   try {
-  //     const res = await fetch(
-  //       `${import.meta.env.VITE_BACKEND_URL}/api/payments/create-order`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         // body: JSON.stringify({ amount: totalInINR }),   // In production
-  //         body: JSON.stringify({ amount: 1 }), // In testing 1 rs
-  //       }
-  //     );
-
-  //     const data = await res.json();
-  //     console.log("Backend Order Created:", data);
-
-  //     if (data.id) {
-  //       setCheckoutId(data.id); // <-- store the Razorpay order_id
-  //     } else {
-  //       alert("Failed to create order");
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Failed to create order. Try again!");
-  //   }
-  // };
 
   const handleCreateCheckout = async (e) => {
     e.preventDefault();
@@ -507,26 +465,27 @@ const Checkout = () => {
                   <p className="text-gray-500">Color: {product.color}</p>
                 </div>
               </div>
-              <p className="text-xl font-bold">
-                {formatCurrencyWithSpace(product.price, "en-IN", "INR", 0)}{" "}
-                <span className="text-sm text-gray-500 font-normal ml-1">
-                  ≈{" "}
-                  {formatCurrencyWithSpace(
-                    (product.price / exchangeRate).toFixed(2),
-                    "en-US",
-                    "USD"
-                  )}
-                </span>
-              </p>
+              {(() => {
+                const unitINR = unitPriceINR(product);
+                const approxUSD = (unitINR / exchangeRate).toFixed(2);
+                return (
+                  <p className="text-xl font-bold">
+                    {formatCurrencyWithSpace(unitINR, "en-IN", "INR")}
+                    <span className="text-sm text-gray-500 font-normal ml-1">
+                      ≈ {formatCurrencyWithSpace(approxUSD, "en-US", "USD")}
+                    </span>
+                  </p>
+                );
+              })()}
             </div>
           ))}
         </div>
         <div className="flex justify-between items-center text-lg mb-4">
           <p>Subtotal</p>
           <p className="text-xl font-bold">
-            {formatCurrencyWithSpace(cart.totalPrice, "en-IN", "INR", 0)}{" "}
+            {formatCurrencyWithSpace(totalInINR, "en-IN", "INR", 0)}{" "}
             <span className="text-sm text-gray-500 font-normal ml-1">
-              ≈ {formatCurrencyWithSpace(amountInUSD, "en-US", "USD")}
+              ≈ {formatCurrencyWithSpace(amountInUSD, "en-US", "USD", 2)}
             </span>
           </p>
         </div>
@@ -537,9 +496,9 @@ const Checkout = () => {
         <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
           <p>Total</p>
           <p className="text-xl font-bold">
-            {formatCurrencyWithSpace(cart.totalPrice, "en-IN", "INR", 0)}{" "}
+            {formatCurrencyWithSpace(totalInINR, "en-IN", "INR", 0)}{" "}
             <span className="text-sm text-gray-500 font-normal ml-1">
-              ≈ {formatCurrencyWithSpace(amountInUSD, "en-US", "USD")}
+              ≈ {formatCurrencyWithSpace(amountInUSD, "en-US", "USD", 2)}
             </span>
           </p>
         </div>

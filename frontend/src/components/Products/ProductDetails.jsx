@@ -10,54 +10,7 @@ import {
 import { addToCart } from "../../redux/slices/cartSlice";
 // 1. First, import the hook at the top:
 import useCurrencyRate from "../../hooks/useCurrencyRate";
-
-// const selectedProduct = {
-//   name: "Stylish Jacket",
-//   price: "1200",
-//   originalPrice: "1800",
-//   description: "This is a stylish Jacket perfect for any occasion",
-//   brand: "FashionBrand",
-//   material: "Leather",
-//   sizes: ["S", "M", "L", "XL"],
-//   colors: ["Red", "Black"],
-//   images: [
-//     {
-//       url: "https://picsum.photos/500/500?random=1",
-//       altText: "Stylish Jacket 1",
-//     },
-//     {
-//       url: "https://picsum.photos/500/500?random=2",
-//       altText: "Stylish Jacket 2",
-//     },
-//   ],
-// };
-
-// const similarProducts = [
-//   {
-//     _id: 1,
-//     name: "Product 1",
-//     price: 1200,
-//     images: [{url: "https://picsum.photos/500/500?random=6"}]
-//   },
-//   {
-//     _id: 2,
-//     name: "Product 2",
-//     price: 1200,
-//     images: [{url: "https://picsum.photos/500/500?random=7"}]
-//   },
-//   {
-//     _id: 3,
-//     name: "Product 3",
-//     price: 1200,
-//     images: [{url: "https://picsum.photos/500/500?random=8"}]
-//   },
-//   {
-//     _id: 4,
-//     name: "Product 4",
-//     price: 1200,
-//     images: [{url: "https://picsum.photos/500/500?random=9"}]
-//   }
-// ]
+import { formatPriceWithPsychology } from "../../utils/priceUtils";
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
@@ -162,6 +115,11 @@ const ProductDetails = ({ productId }) => {
       return;
     }
 
+    const baseUSD = Number(
+      selectedProduct.discountPrice ?? selectedProduct.price
+    );
+    const unitPriceINR = formatPriceWithPsychology(baseUSD, rate);
+
     dispatch(
       addToCart({
         productId: productFetchId,
@@ -170,6 +128,12 @@ const ProductDetails = ({ productId }) => {
         color: selectedColor,
         guestId,
         userId: user?._id,
+
+        price: baseUSD, // keep canonical USD if you need it later
+        priceINR: unitPriceINR, // display-ready INR number
+        discountPrice: selectedProduct.discountPrice ?? null,
+        name: selectedProduct.name, // (optional) handy for drawer
+        image: selectedProduct.images?.[0]?.url, // (optional)
       })
     )
       .unwrap()
@@ -243,41 +207,38 @@ const ProductDetails = ({ productId }) => {
               <div className="mb-4">
                 {selectedProduct.discountPrice ? (
                   (() => {
-                    const priceUSD = Number(selectedProduct.price);
-                    const discountUSD = Number(selectedProduct.discountPrice);
-                    const priceINR = Math.round(priceUSD * rate);
-                    const discountINR = Math.round(discountUSD * rate);
+                    const priceINR = formatPriceWithPsychology(
+                      Number(selectedProduct.price),
+                      rate
+                    );
+                    const discountINR = formatPriceWithPsychology(
+                      Number(selectedProduct.discountPrice),
+                      rate
+                    );
                     const discountPercent = Math.round(
-                      ((priceUSD - discountUSD) / priceUSD) * 100
+                      ((Number(selectedProduct.price) -
+                        Number(selectedProduct.discountPrice)) /
+                        Number(selectedProduct.price)) *
+                        100
                     );
 
-                    // FOMO pricing logic
-                    const fomoPrice = (amount) => {
-                      if (amount > 999) return amount - (amount % 100) + 99; // 1048 → 1099
-                      if (amount > 100) return amount - (amount % 10) + 9; // 248 → 249
-                      return amount; // small amounts don't round
-                    };
-
-                    const fomoPriceINR = fomoPrice(priceINR);
-                    const fomoDiscountINR = fomoPrice(discountINR);
-
-                    let badgeClass = "bg-green-100 text-green-800";
-                    if (discountPercent < 10) {
-                      badgeClass = "bg-yellow-100 text-yellow-800";
-                    } else if (discountPercent > 40) {
-                      badgeClass = "bg-red-100 text-red-800";
-                    }
+                    const badgeClass =
+                      discountPercent < 10
+                        ? "bg-yellow-100 text-yellow-800"
+                        : discountPercent > 40
+                        ? "bg-red-100 text-red-800"
+                        : "bg-green-100 text-green-800";
 
                     return (
                       <div className="flex items-center gap-4 mb-4">
                         <p className="text-lg text-gray-600 line-through">
-                          ₹ {fomoPriceINR.toLocaleString("en-IN")}
+                          ₹ {priceINR.toLocaleString("en-IN")}
                         </p>
                         <p className="text-xl text-red-600 font-semibold">
-                          ₹ {fomoDiscountINR.toLocaleString("en-IN")}
+                          ₹ {discountINR.toLocaleString("en-IN")}
                         </p>
                         <span
-                          className={`text-sm font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${badgeClass}`}
+                          className={`text-sm font-semibold px-2 py-1 rounded-full ${badgeClass}`}
                         >
                           🔥 SAVE {discountPercent}%{" "}
                           <span className="text-xs">Limited Offer</span>
@@ -288,16 +249,10 @@ const ProductDetails = ({ productId }) => {
                 ) : (
                   <p className="text-xl text-gray-900 font-semibold mb-2">
                     ₹{" "}
-                    {(() => {
-                      const priceINR = Math.round(
-                        Number(selectedProduct.price) * rate
-                      );
-                      const fomo =
-                        priceINR > 100
-                          ? priceINR - (priceINR % 10) + 9
-                          : priceINR;
-                      return fomo.toLocaleString("en-IN");
-                    })()}
+                    {formatPriceWithPsychology(
+                      Number(selectedProduct.price),
+                      rate
+                    ).toLocaleString("en-IN")}
                   </p>
                 )}
               </div>

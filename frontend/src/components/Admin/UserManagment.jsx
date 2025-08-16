@@ -203,7 +203,7 @@ const UserManagment = () => {
                       }
                       className="p-2 border rounded"
                     >
-                      <option className="customer">Customer</option>
+                      <option value="customer">Customer</option>
                       <option value="admin">Admin</option>
                     </select>
                   </td>
