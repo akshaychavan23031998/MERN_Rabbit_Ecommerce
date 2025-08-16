@@ -4,6 +4,7 @@ import { RiTwitterXLine } from "react-icons/ri";
 import { TbBrandMeta } from "react-icons/tb";
 import { FiPhoneCall } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -101,25 +102,25 @@ const Footer = () => {
               className="hover:text-gray-500"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://www.facebook.com/"
+              href="https://github.com/akshaychavan23031998"
             >
-              <TbBrandMeta className="h-5 w-5" />
+              <FaGithub className="h-4 w-4" />
             </a>
 
             <a
               className="hover:text-gray-500"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://www.facebook.com/"
+              href="https://www.linkedin.com/in/akshay-chavan23/"
             >
-              <IoLogoInstagram className="h-5 w-5" />
+              <FaLinkedin className="h-4 w-4" />
             </a>
 
             <a
               className="hover:text-gray-500"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://www.facebook.com/"
+              href="https://x.com/AkshayC23480775"
             >
               <RiTwitterXLine className="h-4 w-4" />
             </a>
