@@ -448,38 +448,53 @@ const Checkout = () => {
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg mb-4">Order Summary</h3>
         <div className="border-t py-4 mb-4">
-          {cart.products.map((product, index) => (
-            <div
-              key={index}
-              className="flex items-start justify-between py-2 border-b"
-            >
-              <div className="flex items-start">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-20 h-24 object-cover mr-4"
-                />
-                <div>
-                  <h3 className="text-md">{product.name}</h3>
-                  <p className="text-gray-500">Size: {product.size}</p>
-                  <p className="text-gray-500">Color: {product.color}</p>
+          {cart.products.map((product, index) => {
+            const unitINR = unitPriceINR(product);
+            const qty = product.quantity ?? 1;
+            const lineINR = unitINR * qty;
+            const approxUSDLine = lineINR / exchangeRate;
+
+            return (
+              <div
+                key={index}
+                className="flex items-start justify-between py-2 border-b"
+              >
+                <div className="flex items-start">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-20 h-24 object-cover mr-4"
+                  />
+                  <div className="leading-tight">
+                    <h3 className="text-md">{product.name}</h3>
+                    <p className="text-gray-500 text-sm">
+                      Size: {product.size}
+                    </p>
+
+                    {/* Color and Qty on the same line */}
+                    <div className="flex flex-wrap items-center gap-x-2 text-gray-500 text-sm">
+                      <span>Color: {product.color}</span>
+                      <span className="text-gray-400">•</span>
+                      <span>
+                        Qty: {qty} ×{" "}
+                        {formatCurrencyWithSpace(unitINR, "en-IN", "INR")}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Line total (unit × qty) on the right */}
+                <p className="text-xl font-bold text-right">
+                  {formatCurrencyWithSpace(lineINR, "en-IN", "INR")}
+                  <span className="text-sm text-gray-500 font-normal ml-1">
+                    ≈ {formatCurrencyWithSpace(approxUSDLine, "en-US", "USD")}
+                  </span>
+                </p>
               </div>
-              {(() => {
-                const unitINR = unitPriceINR(product);
-                const approxUSD = (unitINR / exchangeRate).toFixed(2);
-                return (
-                  <p className="text-xl font-bold">
-                    {formatCurrencyWithSpace(unitINR, "en-IN", "INR")}
-                    <span className="text-sm text-gray-500 font-normal ml-1">
-                      ≈ {formatCurrencyWithSpace(approxUSD, "en-US", "USD")}
-                    </span>
-                  </p>
-                );
-              })()}
-            </div>
-          ))}
+            );
+          })}
         </div>
+
         <div className="flex justify-between items-center text-lg mb-4">
           <p>Subtotal</p>
           <p className="text-xl font-bold">
