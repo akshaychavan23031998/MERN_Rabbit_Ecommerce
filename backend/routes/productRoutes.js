@@ -17,7 +17,7 @@ router.post("/", protect, admin, async (req, res) => {
       discountPrice,
       countInStock,
       brand,
-      category, // ✅ ADD THIS LINE
+      category,
       sizes,
       colors,
       collections,
